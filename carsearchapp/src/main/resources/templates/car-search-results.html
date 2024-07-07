@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Car Search Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative; /* Added position relative */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .download-button {
+            display: block;
+            margin-top: 20px; /* Adjust margin as needed */
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 10px 20px;
+        }
+
+        .download-button:hover {
+            background-color: #45a049;
+        }
+
+        /* Styling for the popup */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 900;
+        }
+    </style>
+    <script th:src="@{/js/select-all.js}"></script>
+</head>
+<body>
+    <div class="container">
+        <h2>Search Results</h2>
+
+        <form id="downloadForm" action="/download/xml" method="post" onsubmit="return validateForm()">
+            <table>
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)"/></th>
+                        <th>ID</th>
+                        <th>Length</th>
+                        <th>Weight</th>
+                        <th>Velocity</th>
+                        <th>Color</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="car, rowStat : ${cars}">
+                        <td><input type="checkbox" th:id="'car_' + ${car.id}" th:name="'carIds'"
+                                   th:value="${car.id}"/></td>
+                        <td th:text="${car.id}"></td>
+                        <td th:text="${car.length}"></td>
+                        <td th:text="${car.weight}"></td>
+                        <td th:text="${car.velocity}"></td>
+                        <td th:text="${car.color}"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <button type="submit" class="download-button">Download Selected Cars as XML</button>
+        </form>
+    </div>
+
+    <!-- Popup content -->
+    <div class="overlay" id="overlay"></div>
+    <div class="popup" id="popup">
+        <p>Please select at least one record to download as XML.</p>
+        <button onclick="hidePopup()">OK</button>
+    </div>
+
+    <script>
+        function toggleSelectAll(source) {
+            var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(function(checkbox) {
+                checkbox.checked = source.checked;
+            });
+        }
+
+        function validateForm() {
+            var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            var checked = Array.prototype.slice.call(checkboxes).some(function(checkbox) {
+                return checkbox.checked;
+            });
+
+            if (!checked) {
+                showPopup();
+                return false;
+            }
+
+            return true;
+        }
+
+        function showPopup() {
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('popup').style.display = 'block';
+        }
+
+        function hidePopup() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('popup').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Car Search</title>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff; /* Revert background color to white */
+            color: #333333; /* Revert text color */
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f0f0; /* Previous background color */
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        form {
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            padding-bottom: 20px; /* Add padding at the bottom */
+            border-bottom: 1px solid #ddd; /* Add bottom border */
+        }
+
+        .form-group {
+            width: calc(30% - 10px);
+            margin-bottom: 10px;
+            position: relative; /* For styling the input fields */
+        }
+
+        .form-group > label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold; /* Make labels bold */
+        }
+
+        .form-group > input[type="number"],
+        .form-group > input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc; /* Add border to input fields */
+            border-radius: 3px; /* Rounded corners for input fields */
+            font-size: 14px; /* Adjust font size */
+        }
+
+        button {
+            padding: 10px 20px; /* Adjust button padding */
+            background-color: #4CAF50; /* Previous button color */
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+            border-radius: 5px; /* Rounded corners for button */
+            font-size: 14px; /* Adjust font size */
+        }
+
+        button:hover {
+            background-color: #45a049; /* Darker color on hover */
+        }
+
+        /* Styling for grouping lines */
+        .form-group:nth-child(3n + 1),
+        .form-group:nth-child(3n + 2) {
+            border-right: 1px solid #ddd; /* Right border for 1st and 2nd column */
+        }
+
+        .form-group:nth-last-child(-n + 3) {
+            border-bottom: none; /* Remove bottom border from last row */
+        }
+
+        /* Style for color input specifically */
+        #color {
+            width: calc(100% - 22px); /* Adjust width to fit within form-group */
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+
+        .clear-button {
+            background-color: #f44336; /* Red color for clear button */
+            padding: 10px 20px; /* Adjust button padding */
+            margin-top: 10px;
+            border-radius: 5px; /* Rounded corners for button */
+            font-size: 14px; /* Adjust font size */
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .clear-button:hover {
+            background-color: #d32f2f; /* Darker red color on hover */
+        }
+
+        /* Additional styling for button placement */
+        .button-container {
+            display: flex;
+            justify-content: flex-end; /* Align buttons to the right */
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .button-container > * {
+            margin-left: 10px; /* Add space between buttons */
+        }
+    </style>
+    
+</head>
+<body>
+    <div class="container">
+        <h2>Search Cars</h2>
+        <form action="#" th:action="@{/search}" th:object="${searchParams}" method="post">
+            <div class="form-group">
+                <label for="length">Length:</label>
+                <input type="number" id="length" name="length" th:value="${searchParams.length}" step="0.1">
+            </div>
+            <div class="form-group">
+                <label for="minLength">Min Length:</label>
+                <input type="number" id="minLength" name="minLength" th:value="${searchParams.minLength}" step="0.1">
+            </div>
+            <div class="form-group">
+                <label for="maxLength">Max Length:</label>
+                <input type="number" id="maxLength" name="maxLength" th:value="${searchParams.maxLength}" step="0.1">
+            </div>
+
+            <div class="form-group">
+                <label for="weight">Weight:</label>
+                <input type="number" id="weight" name="weight" th:value="${searchParams.weight}" step="0.1">
+            </div>
+            <div class="form-group">
+                <label for="minWeight">Min Weight:</label>
+                <input type="number" id="minWeight" name="minWeight" th:value="${searchParams.minWeight}" step="0.1">
+            </div>
+            <div class="form-group">
+                <label for="maxWeight">Max Weight:</label>
+                <input type="number" id="maxWeight" name="maxWeight" th:value="${searchParams.maxWeight}" step="0.1">
+            </div>
+
+            <div class="form-group">
+                <label for="velocity">Velocity:</label>
+                <input type="number" id="velocity" name="velocity" th:value="${searchParams.velocity}" step="0.1">
+            </div>
+            <div class="form-group">
+                <label for="minVelocity">Min Velocity:</label>
+                <input type="number" id="minVelocity" name="minVelocity" th:value="${searchParams.minVelocity}" step="0.1">
+            </div>
+            <div class="form-group">
+                <label for="maxVelocity">Max Velocity:</label>
+                <input type="number" id="maxVelocity" name="maxVelocity" th:value="${searchParams.maxVelocity}" step="0.1">
+            </div>
+
+            <div class="form-group" style="width: 100%;">
+                <label for="color">Color:</label>
+                <input type="text" id="color" name="color" th:value="${searchParams.color}">
+            </div>
+
+            <div class="button-container">
+                <button type="submit">Search Cars</button>
+                <button type="button" class="clear-button" onclick="clearFields()">Clear All</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function clearFields() {
+            document.getElementById("length").value = "";
+            document.getElementById("minLength").value = "";
+            document.getElementById("maxLength").value = "";
+            document.getElementById("weight").value = "";
+            document.getElementById("minWeight").value = "";
+            document.getElementById("maxWeight").value = "";
+            document.getElementById("velocity").value = "";
+            document.getElementById("minVelocity").value = "";
+            document.getElementById("maxVelocity").value = "";
+            document.getElementById("color").value = "";
+        }
+    </script>
+</body>
+</html>
